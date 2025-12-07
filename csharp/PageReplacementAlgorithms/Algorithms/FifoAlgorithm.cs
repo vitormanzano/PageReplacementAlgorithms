@@ -9,14 +9,13 @@ public class FifoAlgorithm(string stringReference, int numberOfFrames) : Algorit
         var pages = GetPagesFromStringReference(StringReference);
         foreach (var page in pages)
         {
-            var HasPage = VerifyIfIsPageFault(page);
-            if (HasPage)
+           if (IsPageHit(page))
                 continue;
+           
+           IncreasePageFaults();
             
             if (MemoryState.Count == NumberOfFrames)
-            {
                 RemovePage();
-            }
 
             AddNewPage(page);
         }
@@ -32,19 +31,5 @@ public class FifoAlgorithm(string stringReference, int numberOfFrames) : Algorit
     private void RemovePage()
     {
         MemoryState.RemoveAt(0);
-    }
-
-    private void IncreasePageFaults()
-    {
-        PageFaults++;
-    }
-
-    private bool VerifyIfIsPageFault(int pageNumber)
-    {
-        if (MemoryState.Contains(pageNumber)) 
-            return true;
-        
-        IncreasePageFaults();
-        return false;
     }
 }

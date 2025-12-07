@@ -52,4 +52,10 @@ public abstract class Algorithm
             .ToArray();
         return pages;
     }
+
+    protected bool IsPageHit(int pageNumber) => MemoryState.Contains(pageNumber);
+    
+    protected bool IsPageFault(int pageNumber) => !IsPageHit(pageNumber);
+    
+    protected void IncreasePageFaults() => PageFaults++;
 }
