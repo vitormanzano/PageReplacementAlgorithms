@@ -7,15 +7,14 @@ public class FifoAlgorithm(string stringReference, int numberOfFrames) : Algorit
 {
     private readonly List<List<int>> _steps = [];
     private readonly Queue<int> _memory = new();
+    private readonly HashSet<int> _memorySet = [];
 
     public override AlgorithmResult Run()
     {
         var pages = GetPagesFromStringReference();
         
         foreach (var page in pages)
-        {
            ProcessPage(page);
-        }
 
         return new AlgorithmResult(_steps, PageFaults);
     }
@@ -41,20 +40,22 @@ public class FifoAlgorithm(string stringReference, int numberOfFrames) : Algorit
     protected override void AddPageToMemory(int page)
     {
         _memory.Enqueue(page);
+        _memorySet.Add(page);
     }
 
     protected override void RemovePageFromMemory(int page)
     {
         _memory.Dequeue();
+        _memorySet.Remove(page);
     }
 
     protected override bool IsPageHit(int page)
     {
-        return _memory.Contains(page);
+        return _memorySet.Contains(page); // Using hashset for O(1) lookup
     }
 
     protected override List<int> SnapshotMemory()
     {
-        return _memory.ToList();
+        return [.._memory];
     }
 }
