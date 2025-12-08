@@ -1,35 +1,60 @@
+using System.Collections;
 using PageReplacementAlgorithms.Result;
 
 namespace PageReplacementAlgorithms.Algorithms;
 
 public class FifoAlgorithm(string stringReference, int numberOfFrames) : Algorithm(stringReference, numberOfFrames)
 {
+    private readonly List<List<int>> _steps = [];
+    private readonly Queue<int> _memory = new();
+
     public override AlgorithmResult Run()
     {
-        var pages = GetPagesFromStringReference(StringReference);
+        var pages = GetPagesFromStringReference();
+        
         foreach (var page in pages)
         {
-           if (IsPageHit(page))
-                continue;
-           
-           IncreasePageFaults();
-            
-            if (MemoryState.Count == NumberOfFrames)
-                RemovePage();
-
-            AddNewPage(page);
+           ProcessPage(page);
         }
 
-        return new AlgorithmResult(MemoryState, PageFaults);
+        return new AlgorithmResult(_steps, PageFaults);
     }
 
-    private void AddNewPage(int pageNumber)
+    protected override void ProcessPage(int page)
     {
-        MemoryState.Add(pageNumber);
+        if (IsPageHit(page))
+        {
+            _steps.Add(SnapshotMemory());
+            return;
+        }
+        
+        IncreasePageFaults();
+
+        if (_memory.Count == NumberOfFrames)
+            RemovePageFromMemory(page);
+        
+        AddPageToMemory(page);
+        
+        _steps.Add(SnapshotMemory());
     }
 
-    private void RemovePage()
+    protected override void AddPageToMemory(int page)
     {
-        MemoryState.RemoveAt(0);
+        _memory.Enqueue(page);
+    }
+
+    protected override void RemovePageFromMemory(int page)
+    {
+        _memory.Dequeue();
+    }
+
+    protected override bool IsPageHit(int page)
+    {
+        return _memory.Contains(page);
+    }
+
+    protected override List<int> SnapshotMemory()
+    {
+        return _memory.ToList();
     }
 }

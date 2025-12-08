@@ -1,61 +1,45 @@
+using System.Collections;
 using PageReplacementAlgorithms.Result;
 
 namespace PageReplacementAlgorithms.Algorithms;
 
-public abstract class Algorithm 
+public abstract class Algorithm(string stringReference, int numberOfFrames)
 {
-    public string StringReference { get; private set; }
-    public int NumberOfFrames { get; private set; }
-    public int PageFaults { get; protected set; }
-    protected List<int> MemoryState;
+    private string StringReference { get; } = ValidateStringReference(stringReference);
+    protected int NumberOfFrames { get; } = ValidateNumberOfFrames(numberOfFrames);
+    protected int PageFaults { get; private set; } = 0;
 
-    protected Algorithm(string stringReference, int numberOfFrames)
-    {
-        SetStringReference(stringReference);
-        SetNumberOfFrames(numberOfFrames);
-        MemoryState = [];
-        PageFaults = 0;
-    }
-    
     public abstract AlgorithmResult Run();
-
-    private void SetStringReference(string stringReference)
+    protected abstract void ProcessPage(int page);
+    protected abstract void AddPageToMemory(int page);
+    protected abstract void RemovePageFromMemory(int page);
+    protected abstract bool IsPageHit(int page);
+    protected abstract List<int> SnapshotMemory();
+    
+    
+    private static string ValidateStringReference(string stringReference)
     {
-        ValidateStringReference(stringReference);
-        StringReference = stringReference;
+        return string.IsNullOrEmpty(stringReference) 
+            ? throw new ArgumentException("String reference must be a non-empty string")
+            : stringReference;
     }
     
-    private static void ValidateStringReference(string stringReference)
+    private static int ValidateNumberOfFrames(int numberOfFrames)
     {
-        if (string.IsNullOrEmpty(stringReference)) 
-            throw new ArgumentException("String reference must be a non-empty string");
-    }
-    
-    private void SetNumberOfFrames(int numberOfFrames)
-    {
-        ValidateNumberOfFrames(numberOfFrames);
-        NumberOfFrames = numberOfFrames;
+        return numberOfFrames <= 0
+            ? throw new ArgumentException("Number of frames must be greathen than zero")
+            : numberOfFrames;
     }
 
-    private static void ValidateNumberOfFrames(int numberOfFrames)
+    protected int[] GetPagesFromStringReference()
     {
-        if (numberOfFrames <= 0) 
-            throw new ArgumentException("Number of frames must be a positive integer");
-    }
-
-    protected int[] GetPagesFromStringReference(string stringReference)
-    {
-        var parts = stringReference.Split(',');
-        
-        var pages = parts
-            .Select(p => int.Parse(p.Trim()))
+        return StringReference
+            .Split(',', StringSplitOptions.RemoveEmptyEntries)
+            .Select(p => !int.TryParse(p.Trim(), out var page) 
+                ? throw new ArgumentException($"Invalid page number: {p} in string reference")
+                : page)
             .ToArray();
-        return pages;
     }
-
-    protected bool IsPageHit(int pageNumber) => MemoryState.Contains(pageNumber);
-    
-    protected bool IsPageFault(int pageNumber) => !IsPageHit(pageNumber);
     
     protected void IncreasePageFaults() => PageFaults++;
 }

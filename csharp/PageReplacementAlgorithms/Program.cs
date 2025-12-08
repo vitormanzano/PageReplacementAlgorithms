@@ -1,8 +1,9 @@
 ﻿using PageReplacementAlgorithms.Algorithms;
 
-string stringReference = "7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1";
+const string stringReference = "1, 2, 3, 4, 2, 1, 5, 6, 2, 1, 2, 3, 7, 6, 3, 2, 1, 2, 3, 6";
 
-FifoAlgorithm fifo = new FifoAlgorithm(stringReference, 3);
+var fifo = new FifoAlgorithm(stringReference, 4);
 var result = fifo.Run();
+
 
 Console.WriteLine(result);
