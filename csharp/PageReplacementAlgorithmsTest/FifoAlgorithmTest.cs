@@ -23,5 +23,12 @@ public class FifoAlgorithmTest
         Assert.Equal("String reference must be a non-empty string", ex.Message);
     }
     
-    
+    [Fact]
+    public void ShouldNotRunIfNumberOfFramesIsLessThanOne()
+    {
+        var ex = Assert
+            .Throws<ArgumentException>(() => new FifoAlgorithm("1, 2, 3", 0));
+        
+        Assert.Equal("Number of frames must be greater than zero", ex.Message);
+    }
 }

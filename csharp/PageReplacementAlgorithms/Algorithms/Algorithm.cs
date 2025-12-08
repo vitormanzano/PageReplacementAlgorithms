@@ -27,7 +27,7 @@ public abstract class Algorithm(string stringReference, int numberOfFrames)
     private static int ValidateNumberOfFrames(int numberOfFrames)
     {
         return numberOfFrames <= 0
-            ? throw new ArgumentException("Number of frames must be greathen than zero")
+            ? throw new ArgumentException("Number of frames must be greater than zero")
             : numberOfFrames;
     }
 
