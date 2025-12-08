@@ -1,4 +1,3 @@
-using System.Collections;
 using PageReplacementAlgorithms.Result;
 
 namespace PageReplacementAlgorithms.Algorithms;
@@ -15,7 +14,7 @@ public class FifoAlgorithm(string stringReference, int numberOfFrames) : Algorit
         foreach (var page in pages)
            ProcessPage(page);
 
-        return new AlgorithmResult(_memory, PageFaults);
+        return new AlgorithmResult(_memory.ToList(), PageFaults);
     }
 
     protected override void ProcessPage(int page)
