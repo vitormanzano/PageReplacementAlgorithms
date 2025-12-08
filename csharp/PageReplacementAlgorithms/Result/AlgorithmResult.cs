@@ -1,6 +1,6 @@
 namespace PageReplacementAlgorithms.Result;
 
-public record AlgorithmResult(List<List<int>> Steps, int TotalPageFaults)
+public record AlgorithmResult(Queue<int> FinalMemoryState, int TotalPageFaults)
 {
 }
     

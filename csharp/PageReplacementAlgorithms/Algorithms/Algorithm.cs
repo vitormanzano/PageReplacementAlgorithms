@@ -14,8 +14,6 @@ public abstract class Algorithm(string stringReference, int numberOfFrames)
     protected abstract void AddPageToMemory(int page);
     protected abstract void RemovePageFromMemory(int page);
     protected abstract bool IsPageHit(int page);
-    protected abstract List<int> SnapshotMemory();
-    
     
     private static string ValidateStringReference(string stringReference)
     {

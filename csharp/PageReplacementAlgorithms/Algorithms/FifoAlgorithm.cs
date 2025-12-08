@@ -5,7 +5,6 @@ namespace PageReplacementAlgorithms.Algorithms;
 
 public class FifoAlgorithm(string stringReference, int numberOfFrames) : Algorithm(stringReference, numberOfFrames)
 {
-    private readonly List<List<int>> _steps = [];
     private readonly Queue<int> _memory = new();
     private readonly HashSet<int> _memorySet = [];
 
@@ -16,16 +15,13 @@ public class FifoAlgorithm(string stringReference, int numberOfFrames) : Algorit
         foreach (var page in pages)
            ProcessPage(page);
 
-        return new AlgorithmResult(_steps, PageFaults);
+        return new AlgorithmResult(_memory, PageFaults);
     }
 
     protected override void ProcessPage(int page)
     {
         if (IsPageHit(page))
-        {
-            _steps.Add(SnapshotMemory());
             return;
-        }
         
         IncreasePageFaults();
 
@@ -33,8 +29,6 @@ public class FifoAlgorithm(string stringReference, int numberOfFrames) : Algorit
             RemovePageFromMemory(page);
         
         AddPageToMemory(page);
-        
-        _steps.Add(SnapshotMemory());
     }
 
     protected override void AddPageToMemory(int page)
@@ -45,17 +39,13 @@ public class FifoAlgorithm(string stringReference, int numberOfFrames) : Algorit
 
     protected override void RemovePageFromMemory(int page)
     {
-        _memory.Dequeue();
-        _memorySet.Remove(page);
+        var removed = _memory.Dequeue();
+        _memorySet.Remove(removed);
     }
 
     protected override bool IsPageHit(int page)
     {
         return _memorySet.Contains(page); // Using hashset for O(1) lookup
     }
-
-    protected override List<int> SnapshotMemory()
-    {
-        return [.._memory];
-    }
+    
 }

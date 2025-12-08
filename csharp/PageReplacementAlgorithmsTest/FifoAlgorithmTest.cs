@@ -31,4 +31,34 @@ public class FifoAlgorithmTest
         
         Assert.Equal("Number of frames must be greater than zero", ex.Message);
     }
+    
+    [Fact]
+    public void ShouldRunFifoAlgorithmWith3Frames()
+    {
+        var fifo = new FifoAlgorithm("1, 2, 3, 4, 2, 1, 5, 6, 2, 1, 2, 3, 7, 6, 3, 2, 1, 2, 3, 6", 3);
+        
+        var result = fifo.Run();
+        
+        Assert.Equal(16, result.TotalPageFaults);
+    }
+    
+    [Fact]
+    public void ShouldRunFifoAlgorithmWith4Frames()
+    {
+        var fifo = new FifoAlgorithm("1, 2, 3, 4, 2, 1, 5, 6, 2, 1, 2, 3, 7, 6, 3, 2, 1, 2, 3, 6", 4);
+        
+        var result = fifo.Run();
+        
+        Assert.Equal(14, result.TotalPageFaults);
+    }
+    
+    [Fact]
+    public void ShouldRunFifoAlgorithmWith5Frames()
+    {
+        var fifo = new FifoAlgorithm("1, 2, 3, 4, 2, 1, 5, 6, 2, 1, 2, 3, 7, 6, 3, 2, 1, 2, 3, 6", 5);
+        
+        var result = fifo.Run();
+        
+        Assert.Equal(10, result.TotalPageFaults);
+    }
 }
