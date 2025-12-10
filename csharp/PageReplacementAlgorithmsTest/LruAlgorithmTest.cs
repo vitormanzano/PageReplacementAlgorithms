@@ -35,11 +35,16 @@ public class LruAlgorithmTest
     [Fact]
     public void ShouldRunLruAlgorithmWith3Frames()
     {
+        var expectedMemoryState = new[] { 3, 6, 2 };
+        const int expectedPageFaults = 15;
+        
         var lru = new LruAlgorithm("1, 2, 3, 4, 2, 1, 5, 6, 2, 1, 2, 3, 7, 6, 3, 2, 1, 2, 3, 6", 3);
         
         var result = lru.Run();
         
-        Assert.Equal(16, result.TotalPageFaults);
+        Assert.Equal(expectedPageFaults, result.TotalPageFaults);
+        Assert.All(expectedMemoryState, item =>
+            Assert.Contains(item, result.FinalMemoryState));
     }
     
     [Fact]
@@ -48,9 +53,9 @@ public class LruAlgorithmTest
         var expectedMemoryState = new[] { 3, 1, 6, 2 };
         const int expectedPageFaults = 10;
         
-        var fifo = new FifoAlgorithm("1, 2, 3, 4, 2, 1, 5, 6, 2, 1, 2, 3, 7, 6, 3, 2, 1, 2, 3, 6", 4);
+        var lru = new LruAlgorithm("1, 2, 3, 4, 2, 1, 5, 6, 2, 1, 2, 3, 7, 6, 3, 2, 1, 2, 3, 6", 4);
         
-        var result = fifo.Run();
+        var result = lru.Run();
         
         Assert.Equal(expectedPageFaults, result.TotalPageFaults);
         Assert.All(expectedMemoryState, item =>
@@ -63,9 +68,9 @@ public class LruAlgorithmTest
         var expectedMemoryState = new[] { 3, 1, 6, 2, 7};
         const int expectedPageFaults = 8;
         
-        var fifo = new FifoAlgorithm("1, 2, 3, 4, 2, 1, 5, 6, 2, 1, 2, 3, 7, 6, 3, 2, 1, 2, 3, 6", 5);
+        var lru = new LruAlgorithm("1, 2, 3, 4, 2, 1, 5, 6, 2, 1, 2, 3, 7, 6, 3, 2, 1, 2, 3, 6", 5);
         
-        var result = fifo.Run();
+        var result = lru.Run();
         
         Assert.Equal(expectedPageFaults, result.TotalPageFaults);
         Assert.All(expectedMemoryState, item =>

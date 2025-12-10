@@ -8,7 +8,7 @@ namespace PageReplacementAlgorithms.Algorithms;
 /// </summary>
 public class LruAlgorithm(string stringReference, int numberOfFrames) : Algorithm(stringReference, numberOfFrames)
 {
-    private readonly HashSet<int> _memory = [];
+    private readonly LinkedList<int> _memory = [];
     
     public override AlgorithmResult Run()
     {
@@ -28,25 +28,28 @@ public class LruAlgorithm(string stringReference, int numberOfFrames) : Algorith
         {
             RemovePageFromMemory(page);
             AddPageToMemory(page);
+            return;
         }
         
         IncreasePageFaults();
         
         if (_memory.Count == NumberOfFrames)
-            RemovePageFromMemory(page);
+            RemoveFirstPageFromMemory();
         
         AddPageToMemory(page);
     }
 
     protected override void AddPageToMemory(int page)
     {
-        _memory.Add(page);
+        _memory.AddLast(page);
     }
 
     protected override void RemovePageFromMemory(int page)
     {
         _memory.Remove(page);
     }
+    
+    private void RemoveFirstPageFromMemory() => _memory.RemoveFirst();
 
     protected override bool IsPageHit(int page)
     {
